@@ -314,6 +314,7 @@ int ompi_request_default_test_some(
             num_requests_null_inactive++;
             continue;
         }
+        opal_progress();
         if( REQUEST_COMPLETE(request) ) {
 #if OPAL_ENABLE_FT_CR == 1
             if( opal_cr_is_enabled) {
