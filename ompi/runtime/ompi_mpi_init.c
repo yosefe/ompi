@@ -433,7 +433,7 @@ int ompi_mpi_init(int argc, char **argv, int requested, int *provided,
 
     /* If thread support was enabled, then setup OPAL to allow for them. This must be done
      * early to prevent a race condition that can occur with orte_init(). */
-    if (*provided != MPI_THREAD_SINGLE) {
+    if (*provided != MPI_THREAD_SINGLE && *provided != MPI_THREAD_SERIALIZED) {
         opal_set_using_threads(true);
     }
 
@@ -660,7 +660,7 @@ int ompi_mpi_init(int argc, char **argv, int requested, int *provided,
     opal_pmix.commit();
     OMPI_TIMING_NEXT("commit");
 #if (OPAL_ENABLE_TIMING)
-    if (OMPI_TIMING_ENABLED && !opal_pmix_base_async_modex && 
+    if (OMPI_TIMING_ENABLED && !opal_pmix_base_async_modex &&
             opal_pmix_collect_all_data) {
         if (OMPI_SUCCESS != (ret = opal_pmix.fence(NULL, 0))) {
             error = "timing: pmix-barrier-1 failed";

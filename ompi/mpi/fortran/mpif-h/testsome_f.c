@@ -90,7 +90,7 @@ void ompi_testsome_f(MPI_Fint *incount, MPI_Fint *array_of_requests,
         return;
     }
 
-    c_req = (MPI_Request *) malloc(OMPI_FINT_2_INT(*incount) *
+    c_req = (MPI_Request *) alloca(OMPI_FINT_2_INT(*incount) *
                    (sizeof(MPI_Request) + sizeof(MPI_Status)));
     if (NULL == c_req) {
         c_ierr = OMPI_ERRHANDLER_INVOKE(MPI_COMM_WORLD,
@@ -102,7 +102,8 @@ void ompi_testsome_f(MPI_Fint *incount, MPI_Fint *array_of_requests,
     c_status = (MPI_Status*) (c_req + OMPI_FINT_2_INT(*incount));
 
     for (i = 0; i < OMPI_FINT_2_INT(*incount); ++i) {
-        c_req[i] = PMPI_Request_f2c(array_of_requests[i]);
+        // c_req[i] = PMPI_Request_f2c(array_of_requests[i]);
+        c_req[i] = (MPI_Request)ompi_request_f_to_c_table.addr[array_of_requests[i]];
     }
 
     OMPI_ARRAY_FINT_2_INT_ALLOC(array_of_indices, OMPI_FINT_2_INT(*incount));
@@ -131,5 +132,5 @@ void ompi_testsome_f(MPI_Fint *incount, MPI_Fint *array_of_requests,
             }
         }
     }
-    free(c_req);
+    //free(c_req);
 }
